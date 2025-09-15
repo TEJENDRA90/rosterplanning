@@ -1,0 +1,40 @@
+{
+  "_version": "1.12.0",
+  "sap.app": {
+    "id": "rosterplanningvk",
+    "type": "application",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "rosterplanningvk",
+    "description": "rosterplanningvk",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.8.3",
+      "toolsId": "bf095488-68de-49ee-9e1c-6710c26b5fc5"
+  },
+    "crossNavigation": {
+      "inbounds": {
+          "cwf-performancereport-inbound": {
+              "signature": {
+                  "parameters": {},
+                  "additionalParameters": "allowed"
+              },
+              "semanticObject": "rosterplanningvk",
+              "action": "Display",
+              "title": "ddd",
+              "subTitle": "aaa",
+              "icon": ""
+          }
+      }
+    }
+
+  },
+  "sap.ui": {
+    "technology": "URL"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "rosterplanningvk"
+  }
+}
