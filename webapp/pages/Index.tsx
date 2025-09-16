@@ -215,7 +215,7 @@ const Index = () => {
                 />
               </div>
                 <Button variant="default" size="sm" className="bg-[#347deb] text-white hover:bg-blue-500" asChild>
-                  <a href="/RosterSample.xlsx" download>
+                  <a href="./RosterSample.xlsx" download>
                 <Download className="h-4 w-4" /> 
                 Templete
                   </a>
