@@ -178,8 +178,8 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
-      <div className="min-h-screen bg-background p-6">
-        <div className="container mx-auto px-2 sm:px-4 md:px-8 py-4">
+      <div className="min-h-screen bg-background" style={{ padding: '5px' }}>
+        <div className="py-4">
 
           <>
           {/* Header */}

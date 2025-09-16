@@ -326,7 +326,7 @@ const RosterDetail = () => {
       }, [localSchedule, scheduleOptions]);
 
       return (
-        <TableCell style={{ minWidth: rowWidth[0], width: rowWidth[0], whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
+        <TableCell style={{ minWidth: rowWidth[0], width: rowWidth[0], whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} className="text-left">
           {isEditing ? (
             <>
               <Select
@@ -364,15 +364,15 @@ const RosterDetail = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <div className="mt-2">{localSlots}</div>
-              <div>{localTotalHours}</div>
+              <div className="mt-2 whitespace-nowrap overflow-hidden text-ellipsis">{localSlots}</div>
+              <div className="whitespace-nowrap">{localTotalHours}</div>
             </>
           ) : (
             <>
-              <div>{dayTypeValue}</div>
-              <div>{scheduleValue}</div>
-              <div>{slotsValue}</div>
-              <div>{totalHoursValue}</div>
+              <div className="whitespace-nowrap">{dayTypeValue}</div>
+              <div className="whitespace-nowrap">{scheduleValue}</div>
+              <div className="whitespace-nowrap overflow-hidden text-ellipsis">{slotsValue}</div>
+              <div className="whitespace-nowrap">{totalHoursValue}</div>
             </>
           )}
         </TableCell>
@@ -475,15 +475,15 @@ const RosterDetail = () => {
 
     return (
       <TableRow key={row.ROSTER_ITEM_ID} className="hover:bg-muted/50">
-        <TableCell>
+        <TableCell className="text-center">
           <Checkbox
             checked={selectedJobs.includes(row.ROSTER_ITEM_ID.toString())}
             onCheckedChange={() => handleSelectJob(row.ROSTER_ITEM_ID.toString())}
           />
         </TableCell>
-        <TableCell className="min-w-[120px]">{row.JOB_TITLE}</TableCell>
-        <TableCell className="min-w-[100px]  text-center">{row.JOB_CODE}</TableCell>
-        <TableCell className="min-w-[140px]  text-center">{row.JOB_TITLE_SEQ_NO}</TableCell>
+        <TableCell className="min-w-[120px] text-left">{row.JOB_TITLE}</TableCell>
+        <TableCell className="min-w-[100px] text-left">{row.JOB_CODE}</TableCell>
+        <TableCell className="min-w-[140px] text-left">{row.JOB_TITLE_SEQ_NO}</TableCell>
         {dayColumns.map(day => {
           const editVals = isEditing ? localEdits[day] || {} : (editedRowValues[row.ROSTER_ITEM_ID]?.[day]) || {};
           const currentDayType = isEditing ? editVals.DAY_TYPE ?? row[`DAY_TYPE_${day}`] : row[`DAY_TYPE_${day}`];
@@ -508,7 +508,7 @@ const RosterDetail = () => {
             />
           );
         })}
-        <TableCell>
+        <TableCell className="text-center">
           {isEditing ? (
             <Button size="sm" className="bg-[#347deb] text-white hover:bg-blue-500" onClick={handleSave}>
               Save
@@ -552,8 +552,9 @@ const RosterDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      {(rosterDaysLoading) && (
+    <div className="min-h-screen bg-background" style={{ padding: '5px' }}>
+      <div className="py-4">
+        {(rosterDaysLoading) && (
         <div className="fixed inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#347deb]"></div>
           <span className="ml-4 text-[#347deb] font-semibold">Loading...</span>
@@ -564,7 +565,7 @@ const RosterDetail = () => {
           <div className={`p-4 rounded shadow-lg ${alert.type === 'error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`}>{alert.message}</div>
         </div>
       )}
-      <div className="max-w-7xl mx-auto">
+      <div>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <Button variant="default" size="sm" onClick={() => navigate("/")} className="bg-[#347deb] text-white hover:bg-blue-500">
@@ -657,7 +658,7 @@ const RosterDetail = () => {
                   <TableRow>
                     <TableCell colSpan={4 + dayColumns.length} className="p-0 align-middle">
                       <div className="w-full flex justify-center items-center h-16 min-h-16">
-                        <span className="mx-auto w-max text-gray-400 text-base">No data available.</span>
+                        <span className="text-gray-400 text-base text-center">No data available.</span>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -746,6 +747,7 @@ const RosterDetail = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+      </div>
       </div>
     </div>
   );
