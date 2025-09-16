@@ -481,7 +481,9 @@ const RosterDetail = () => {
             onCheckedChange={() => handleSelectJob(row.ROSTER_ITEM_ID.toString())}
           />
         </TableCell>
-        <TableCell>{row.JOB_TITLE}</TableCell>
+        <TableCell className="min-w-[120px]">{row.JOB_TITLE}</TableCell>
+        <TableCell className="min-w-[100px]  text-center">{row.JOB_CODE}</TableCell>
+        <TableCell className="min-w-[140px]  text-center">{row.JOB_TITLE_SEQ_NO}</TableCell>
         {dayColumns.map(day => {
           const editVals = isEditing ? localEdits[day] || {} : (editedRowValues[row.ROSTER_ITEM_ID]?.[day]) || {};
           const currentDayType = isEditing ? editVals.DAY_TYPE ?? row[`DAY_TYPE_${day}`] : row[`DAY_TYPE_${day}`];
@@ -621,7 +623,9 @@ const RosterDetail = () => {
                       onCheckedChange={handleSelectAll}
                     />
                   </TableHead>
-                  <TableHead className="text-white bg-[#347deb]">Job Title</TableHead>
+                  <TableHead className="text-white bg-[#347deb] min-w-[120px]">Job Title</TableHead>
+                  <TableHead className="text-white bg-[#347deb] min-w-[100px]">Job Code</TableHead>
+                  <TableHead className="text-white bg-[#347deb] min-w-[140px]">Job Sequence</TableHead>
                   {dayColumns.map(day => (
                     <TableHead key={day} className="text-center text-white bg-[#347deb]">
                       Day {day}
@@ -630,6 +634,8 @@ const RosterDetail = () => {
                   <TableHead className="text-white bg-[#347deb]">Action</TableHead>
                 </TableRow>
                 <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                  <TableHead className="bg-[#347deb]"></TableHead>
+                  <TableHead className="bg-[#347deb]"></TableHead>
                   <TableHead className="bg-[#347deb]"></TableHead>
                   <TableHead className="bg-[#347deb]"></TableHead>
                   {dayColumns.map(day => (
@@ -649,7 +655,7 @@ const RosterDetail = () => {
               {rosterDaysLoading ? null : rosterDaysStructure.length === 0 ? (
                 <TableBody>
                   <TableRow>
-                    <TableCell colSpan={2 + dayColumns.length} className="p-0 align-middle">
+                    <TableCell colSpan={4 + dayColumns.length} className="p-0 align-middle">
                       <div className="w-full flex justify-center items-center h-16 min-h-16">
                         <span className="mx-auto w-max text-gray-400 text-base">No data available.</span>
                       </div>
