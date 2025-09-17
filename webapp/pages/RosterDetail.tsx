@@ -58,6 +58,7 @@ const RosterDetail = () => {
   const [editRowId, setEditRowId] = useState<string | null>(null);
   const [editedRowValues, setEditedRowValues] = useState<Record<string, any>>({});
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [rosterStatus, setRosterStatus] = useState(false);
 
   const fetchCurrentUser = useCallback(async () => {
@@ -81,7 +82,7 @@ const RosterDetail = () => {
   const fetchSchedulingStatus = useCallback(async () => {
     setRosterDaysLoading(true);
     try {
-      const res = await get("./../../api/roster/rosterManagement/fetchSchedulingStatus");
+      const res = await get("./../../api/roster/rosterManagement/fetchSchedulingJobBase");
       setSchedulingStatus(res.data.results);
     } catch {
       setSchedulingStatus(null);
@@ -154,15 +155,28 @@ const RosterDetail = () => {
     [memoizedPlanning]
   );
 
-  const scheduleOptions = useMemo(
-    () => memoizedSchedulingStatus.map((item: any) => ({
-      value: String(item.SHIFT_CODE),
-      label: `${item.SHIFT_CODE} - ${item.ACTUAL_SLOTS}`,
-      slots: item.ACTUAL_SLOTS,
-      totalHours: item.TOTAL_HOURS,
-    })),
-    [memoizedSchedulingStatus]
-  );
+  const getScheduleOptions = useCallback((jobTitle: string) => {
+    if (!memoizedSchedulingStatus || !Array.isArray(memoizedSchedulingStatus)) {
+      return [];
+    }
+    
+    // Find the job that matches the jobTitle
+    const jobData = memoizedSchedulingStatus.find((item: any) => {
+      return item.jobCodeId === jobTitle;
+    });
+    
+    if (!jobData || !jobData.slots || !Array.isArray(jobData.slots)) {
+      return [];
+    }
+    
+    // Map the slots to schedule options
+    return jobData.slots.map((slot: any) => ({
+      value: String(slot.SHIFT_CODE),
+      label: `${slot.SHIFT_CODE} - ${slot.ACTUAL_SLOTS}`,
+      slots: slot.ACTUAL_SLOTS,
+      totalHours: slot.TOTAL_HOURS,
+    }));
+  }, [memoizedSchedulingStatus]);
 
   const handleAddJob = useCallback((jobData: { jobTitle: string; jobCode: string }, closeDialog: () => void) => {
     closeDialog();
@@ -254,7 +268,8 @@ const RosterDetail = () => {
     });
   }, []);
 
-  const handleScheduleChange = useCallback((rowId: string, day: number, value: string) => {
+  const handleScheduleChange = useCallback((rowId: string, day: number, value: string, jobTitle: string) => {
+    const scheduleOptions = getScheduleOptions(jobTitle);
     const scheduleObj = scheduleOptions.find(s => s.value === value);
     setEditedRowValues(prev => {
       const prevRow = prev[rowId] || {};
@@ -272,7 +287,7 @@ const RosterDetail = () => {
         },
       };
     });
-  }, [scheduleOptions]);
+  }, [getScheduleOptions]);
 
   useEffect(() => {
     if (alert) {
@@ -289,7 +304,7 @@ const RosterDetail = () => {
       slotsValue,
       totalHoursValue,
       dayTypeOptions,
-      scheduleOptions,
+      jobTitle,
       onDayTypeChange,
       onScheduleChange,
       rowId,
@@ -302,13 +317,14 @@ const RosterDetail = () => {
       slotsValue: string;
       totalHoursValue: string;
       dayTypeOptions: { value: string; label: string }[];
-      scheduleOptions: { value: string; label: string; slots: string; totalHours: string }[];
+      jobTitle: string;
       onDayTypeChange: (val: string) => void;
       onScheduleChange: (val: string) => void;
       rowId: string;
       day: number;
       rowWidth: number[];
     }) => {
+      const scheduleOptions = React.useMemo(() => getScheduleOptions(jobTitle), [getScheduleOptions, jobTitle]);
       const [localDayType, setLocalDayType] = React.useState(dayTypeValue);
       const [localSchedule, setLocalSchedule] = React.useState(scheduleValue);
       const [localSlots, setLocalSlots] = React.useState(slotsValue);
@@ -346,6 +362,7 @@ const RosterDetail = () => {
                 </SelectContent>
               </Select>
               <Select
+                key={`schedule-${jobTitle}-${localSchedule}`}
                 value={localSchedule || undefined}
                 onValueChange={val => {
                   const scheduleObj = scheduleOptions.find(s => s.value === val);
@@ -463,6 +480,7 @@ const RosterDetail = () => {
           ...prev[day],
           [field]: value,
           ...(field === 'SCHEDULE_STATUS' ? (() => {
+            const scheduleOptions = getScheduleOptions(row.JOB_TITLE);
             const scheduleObj = scheduleOptions.find(s => s.value === value);
             return {
               SLOTS: scheduleObj?.slots || '',
@@ -499,7 +517,7 @@ const RosterDetail = () => {
               slotsValue={currentSlots}
               totalHoursValue={currentTotalHours}
               dayTypeOptions={dayTypeOptions}
-              scheduleOptions={scheduleOptions}
+              jobTitle={row.JOB_TITLE}
               onDayTypeChange={val => handleCellEdit(day, 'DAY_TYPE', val)}
               onScheduleChange={val => handleCellEdit(day, 'SCHEDULE_STATUS', val)}
               rowId={row.ROSTER_ITEM_ID.toString()}
@@ -598,7 +616,7 @@ const RosterDetail = () => {
             <Button
               variant="destructive"
               size="sm"
-              onClick={handleDeleteSelected}
+              onClick={() => setDeleteDialogOpen(true)}
               disabled={selectedJobs.length === 0}
               className="bg-[#347deb] text-white hover:bg-blue-500"
             >
@@ -744,6 +762,30 @@ const RosterDetail = () => {
                 Confirm
               </AlertDialogAction>
               
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete the selected job positions? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-[#347deb] text-white hover:bg-blue-500"
+                onClick={async () => {
+                  setDeleteDialogOpen(false);
+                  await handleDeleteSelected();
+                }}
+              >
+                Confirm
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

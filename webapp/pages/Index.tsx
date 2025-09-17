@@ -273,8 +273,8 @@ const Index = () => {
                     <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Name</TableHead>
                     <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Code</TableHead>
                     <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Rostering Days</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Modified By</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Modified On</TableHead>
+                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Modified By</TableHead>
+                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Modified On</TableHead>
                     <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -339,6 +339,7 @@ const Index = () => {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
+                    className="bg-[#347deb] text-white hover:bg-blue-500"
                     onClick={async () => {
                       setConfirmDialogOpen(false);
                       if (!pendingRoster || !currentUser?.fullName) return;
@@ -346,7 +347,7 @@ const Index = () => {
                         ROSTER_NAME: pendingRoster.rosterName,
                         ROSTER_CODE: pendingRoster.rosterCode,
                         DAY: pendingRoster.rosteringDays,
-                        MODIFIED_BY: currentUser.fullName,
+                        MODIFIED_BY: currentUser.pUserId,
                         STATUS: "DRAFT",
                       };
                       try {
@@ -381,6 +382,7 @@ const Index = () => {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
+                    className="bg-[#347deb] text-white hover:bg-blue-500"
                     onClick={async () => {
                       setDeleteDialogOpen(false);
                       if (!currentUser?.fullName) return;
