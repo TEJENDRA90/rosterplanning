@@ -631,44 +631,51 @@ const RosterDetail = () => {
           </div>
         </div>
 
-        <div className="border rounded-lg overflow-x-auto max-h-[800px]">
-          <Table className="min-w-[1200px] w-full">
-            <TableHeader className="sticky top-0 z-50 bg-[#347deb]">
-              <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                <TableHead className="w-12 text-white bg-[#347deb] sticky top-0 z-50">
-                  <Checkbox
-                    checked={selectedJobs.length === rosterDaysStructure.length && rosterDaysStructure.length > 0}
-                    onCheckedChange={handleSelectAll}
-                  />
-                </TableHead>
-                <TableHead className="text-white bg-[#347deb] w-[120px] sticky top-0 z-50">Job Title</TableHead>
-                <TableHead className="text-white bg-[#347deb] w-[100px] sticky top-0 z-50">Job Code</TableHead>
-                <TableHead className="text-white bg-[#347deb] w-[140px] sticky top-0 z-50">Job Sequence</TableHead>
-                {dayColumns.map(day => (
-                  <TableHead key={day} className="text-center text-white bg-[#347deb] w-[150px] sticky top-0 z-50">
-                    Day {day}
+        <div className="border rounded-lg overflow-auto max-h-[800px]">
+          {/* Sticky Header */}
+          <div className="sticky top-0 z-50 bg-[#347deb]">
+            <Table className="min-w-[1200px] w-full" style={{ tableLayout: 'fixed' }}>
+              <TableHeader className="bg-[#347deb]">
+                <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                  <TableHead className="w-12 text-white bg-[#347deb]">
+                    <Checkbox
+                      checked={selectedJobs.length === rosterDaysStructure.length && rosterDaysStructure.length > 0}
+                      onCheckedChange={handleSelectAll}
+                    />
                   </TableHead>
-                ))}
-                <TableHead className="text-white bg-[#347deb] w-[100px] sticky top-0 z-50">Action</TableHead>
-              </TableRow>
-              <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
-                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
-                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
-                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
-                {dayColumns.map(day => (
-                  <TableHead key={`sub-${day}`} className="bg-[#347deb] w-[150px] sticky top-0 z-50">
-                    <div className="space-y-1 text-xs text-white">
-                      <div>Day Type</div>
-                      <div>Schedule</div>
-                      <div>Slots</div>
-                      <div>Total Hours</div>
-                    </div>
-                  </TableHead>
-                ))}
-                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
-              </TableRow>
-            </TableHeader>
+                  <TableHead className="text-white bg-[#347deb] w-[120px]">Job Title</TableHead>
+                  <TableHead className="text-white bg-[#347deb] w-[100px]">Job Code</TableHead>
+                  <TableHead className="text-white bg-[#347deb] w-[140px]">Job Sequence</TableHead>
+                  {dayColumns.map(day => (
+                    <TableHead key={day} className="text-center text-white bg-[#347deb] w-[150px]">
+                      Day {day}
+                    </TableHead>
+                  ))}
+                  <TableHead className="text-white bg-[#347deb] w-[100px]">Action</TableHead>
+                </TableRow>
+                <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                  <TableHead className="bg-[#347deb] w-12"></TableHead>
+                  <TableHead className="bg-[#347deb] w-[120px]"></TableHead>
+                  <TableHead className="bg-[#347deb] w-[100px]"></TableHead>
+                  <TableHead className="bg-[#347deb] w-[140px]"></TableHead>
+                  {dayColumns.map(day => (
+                    <TableHead key={`sub-${day}`} className="bg-[#347deb] w-[150px]">
+                      <div className="space-y-1 text-xs text-white">
+                        <div>Day Type</div>
+                        <div>Schedule</div>
+                        <div>Slots</div>
+                        <div>Total Hours</div>
+                      </div>
+                    </TableHead>
+                  ))}
+                  <TableHead className="bg-[#347deb] w-[100px]"></TableHead>
+                </TableRow>
+              </TableHeader>
+            </Table>
+          </div>
+          
+          {/* Scrollable Body */}
+          <Table className="min-w-[1200px] w-full" style={{ tableLayout: 'fixed' }}>
             <TableBody>
               {rosterDaysLoading ? null : rosterDaysStructure.length === 0 ? (
                 <TableRow>
