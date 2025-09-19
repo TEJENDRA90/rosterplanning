@@ -170,11 +170,18 @@ const Index = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  // Filter rosters by search term
-  const filteredRosters = rosters.filter(roster =>
-    roster.ROSTER_NAME.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    roster.ROSTER_CODE.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter rosters by search term and sort by modified date (newest first)
+  const filteredRosters = rosters
+    .filter(roster =>
+      roster.ROSTER_NAME.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      roster.ROSTER_CODE.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      // Sort by MODIFIED_ON date in descending order (newest first)
+      const dateA = new Date(a.MODIFIED_ON || 0);
+      const dateB = new Date(b.MODIFIED_ON || 0);
+      return dateB.getTime() - dateA.getTime();
+    });
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
@@ -264,21 +271,25 @@ const Index = () => {
 
           {/* Table */}
             <div className="border rounded-lg overflow-auto max-h-[800px]">
-              <Table className="min-w-[700px]">
-                <TableHeader className="sticky top-0 z-10 bg-[#347deb]">
+              <div className="sticky top-0 z-50 bg-[#347deb]">
+                <Table className="min-w-[700px]">
+                  <TableHeader className="bg-[#347deb]">
                   <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                    <TableHead className="w-12 text-white sticky top-0 z-20 bg-[#347deb]">{/* Checkbox */}
+                    <TableHead className="w-12 text-white bg-[#347deb]">{/* Checkbox */}
                       <Checkbox checked={selectedRosters.length === rosters.length && rosters.length > 0} onCheckedChange={handleSelectAll} />
                   </TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Name</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Code</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Rostering Days</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Modified By</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Modified On</TableHead>
-                    <TableHead className="text-white sticky top-0 z-20 bg-[#347deb] text-xs md:text-sm">Roster Status</TableHead>
+                    <TableHead className="text-white bg-[#347deb] text-xs md:text-sm w-[200px]">Roster Name</TableHead>
+                    <TableHead className="text-white bg-[#347deb] text-xs md:text-sm w-[150px]">Roster Code</TableHead>
+                    <TableHead className="text-white bg-[#347deb] text-xs md:text-sm w-[120px]">Rostering Days</TableHead>
+                    <TableHead className="text-white bg-[#347deb] text-xs md:text-sm w-[150px]">Modified By</TableHead>
+                    <TableHead className="text-white bg-[#347deb] text-xs md:text-sm w-[150px]">Modified On</TableHead>
+                    <TableHead className="text-white bg-[#347deb] text-xs md:text-sm w-[120px]">Roster Status</TableHead>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
+                </TableHeader>
+                </Table>
+              </div>
+              <Table className="min-w-[700px]">
+                <TableBody>
                   {filteredRosters.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center text-gray-400">
@@ -288,13 +299,13 @@ const Index = () => {
                   ) : (
                     filteredRosters.map((roster) => (
                   <TableRow key={roster.id} className="hover:bg-muted/50">
-                    <TableCell>
+                    <TableCell className="w-12">
                       <Checkbox
                         checked={selectedRosters.includes(roster.id)}
                         onCheckedChange={() => handleSelectRoster(roster.id)}
                       />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="w-[200px]">
                       <button
                         onClick={() => handleRosterClick(roster)}
                         className="text-blue-600 hover:underline text-left"
@@ -302,11 +313,11 @@ const Index = () => {
                             {roster.ROSTER_NAME}
                       </button>
                     </TableCell>
-                        <TableCell>{roster.ROSTER_CODE}</TableCell>
-                        <TableCell>{roster.DAY}</TableCell>
-                        <TableCell>{roster.MODIFIED_BY}</TableCell>
-                        <TableCell>{roster.FORMAT_MODIFIED_ON}</TableCell>
-                    <TableCell>
+                        <TableCell className="w-[150px]">{roster.ROSTER_CODE}</TableCell>
+                        <TableCell className="w-[120px]">{roster.DAY}</TableCell>
+                        <TableCell className="w-[150px]">{roster.MODIFIED_BY}</TableCell>
+                        <TableCell className="w-[150px]">{roster.FORMAT_MODIFIED_ON}</TableCell>
+                    <TableCell className="w-[120px]">
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-green-800">
                             {roster.STATUS}
                       </span>
@@ -314,9 +325,9 @@ const Index = () => {
                   </TableRow>
                     ))
                   )}
-              </TableBody>
-            </Table>
-          </div>
+                </TableBody>
+              </Table>
+            </div>
 
           <RosterDialog
             open={isRosterDialogOpen}
@@ -468,10 +479,10 @@ const Index = () => {
                           },
                         });
                         setUploadProgress(100);
-                        setAlert({ type: 'success', message: 'Document uploaded successfully' });
+                        setAlert({ type: 'success', message: 'Roster Created successfully..!!' });
                         fetchRosters();
                       } catch {
-                        setAlert({ type: 'error', message: 'Mass upload failed' });
+                        setAlert({ type: 'error', message: 'Roster Created failed..!!' });
                       } finally {
                         setTimeout(() => {
                           setUploadDialogOpen(false);

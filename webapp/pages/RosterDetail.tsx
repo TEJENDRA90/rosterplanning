@@ -342,7 +342,7 @@ const RosterDetail = () => {
       }, [localSchedule, scheduleOptions]);
 
       return (
-        <TableCell style={{ minWidth: rowWidth[0], width: rowWidth[0], whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} className="text-left">
+        <TableCell className="w-[150px] text-left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {isEditing ? (
             <>
               <Select
@@ -493,15 +493,15 @@ const RosterDetail = () => {
 
     return (
       <TableRow key={row.ROSTER_ITEM_ID} className="hover:bg-muted/50">
-        <TableCell className="text-center">
+        <TableCell className="w-12 text-center">
           <Checkbox
             checked={selectedJobs.includes(row.ROSTER_ITEM_ID.toString())}
             onCheckedChange={() => handleSelectJob(row.ROSTER_ITEM_ID.toString())}
           />
         </TableCell>
-        <TableCell className="min-w-[120px] text-left">{row.JOB_TITLE}</TableCell>
-        <TableCell className="min-w-[100px] text-left">{row.JOB_CODE}</TableCell>
-        <TableCell className="min-w-[140px] text-left">{row.JOB_TITLE_SEQ_NO}</TableCell>
+        <TableCell className="w-[120px] text-left">{row.JOB_TITLE}</TableCell>
+        <TableCell className="w-[100px] text-left">{row.JOB_CODE}</TableCell>
+        <TableCell className="w-[140px] text-left">{row.JOB_TITLE_SEQ_NO}</TableCell>
         {dayColumns.map(day => {
           const editVals = isEditing ? localEdits[day] || {} : (editedRowValues[row.ROSTER_ITEM_ID]?.[day]) || {};
           const currentDayType = isEditing ? editVals.DAY_TYPE ?? row[`DAY_TYPE_${day}`] : row[`DAY_TYPE_${day}`];
@@ -526,7 +526,7 @@ const RosterDetail = () => {
             />
           );
         })}
-        <TableCell className="text-center">
+        <TableCell className="w-[100px] text-center">
           {isEditing ? (
             <Button size="sm" className="bg-[#347deb] text-white hover:bg-blue-500" onClick={handleSave}>
               Save
@@ -572,7 +572,7 @@ const RosterDetail = () => {
   return (
     <div className="min-h-screen bg-background" style={{ padding: '5px' }}>
       <div className="py-4">
-        {(rosterDaysLoading) && (
+      {(rosterDaysLoading) && (
         <div className="fixed inset-0 bg-white bg-opacity-60 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#347deb]"></div>
           <span className="ml-4 text-[#347deb] font-semibold">Loading...</span>
@@ -632,68 +632,63 @@ const RosterDetail = () => {
         </div>
 
         <div className="border rounded-lg overflow-x-auto max-h-[800px]">
-          <div className="relative">
-            <Table className="min-w-[700px] w-full">
-              <TableHeader>
-                <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                  <TableHead className="w-12 text-white bg-[#347deb]">
-                    <Checkbox
-                      checked={selectedJobs.length === rosterDaysStructure.length && rosterDaysStructure.length > 0}
-                      onCheckedChange={handleSelectAll}
-                    />
+          <Table className="min-w-[1200px] w-full">
+            <TableHeader className="sticky top-0 z-50 bg-[#347deb]">
+              <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                <TableHead className="w-12 text-white bg-[#347deb] sticky top-0 z-50">
+                  <Checkbox
+                    checked={selectedJobs.length === rosterDaysStructure.length && rosterDaysStructure.length > 0}
+                    onCheckedChange={handleSelectAll}
+                  />
+                </TableHead>
+                <TableHead className="text-white bg-[#347deb] w-[120px] sticky top-0 z-50">Job Title</TableHead>
+                <TableHead className="text-white bg-[#347deb] w-[100px] sticky top-0 z-50">Job Code</TableHead>
+                <TableHead className="text-white bg-[#347deb] w-[140px] sticky top-0 z-50">Job Sequence</TableHead>
+                {dayColumns.map(day => (
+                  <TableHead key={day} className="text-center text-white bg-[#347deb] w-[150px] sticky top-0 z-50">
+                    Day {day}
                   </TableHead>
-                  <TableHead className="text-white bg-[#347deb] min-w-[120px]">Job Title</TableHead>
-                  <TableHead className="text-white bg-[#347deb] min-w-[100px]">Job Code</TableHead>
-                  <TableHead className="text-white bg-[#347deb] min-w-[140px]">Job Sequence</TableHead>
-                  {dayColumns.map(day => (
-                    <TableHead key={day} className="text-center text-white bg-[#347deb]">
-                      Day {day}
-                    </TableHead>
-                  ))}
-                  <TableHead className="text-white bg-[#347deb]">Action</TableHead>
-                </TableRow>
-                <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                  <TableHead className="bg-[#347deb]"></TableHead>
-                  <TableHead className="bg-[#347deb]"></TableHead>
-                  <TableHead className="bg-[#347deb]"></TableHead>
-                  <TableHead className="bg-[#347deb]"></TableHead>
-                  {dayColumns.map(day => (
-                    <TableHead key={`sub-${day}`} className="bg-[#347deb]">
-                      <div className="space-y-1 text-xs text-white">
-                        <div>Day Type</div>
-                        <div>Schedule</div>
-                        <div>Slots</div>
-                        <div>Total Hours</div>
-                      </div>
-                    </TableHead>
-                  ))}
-                  <TableHead className="bg-[#347deb]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              
+                ))}
+                <TableHead className="text-white bg-[#347deb] w-[100px] sticky top-0 z-50">Action</TableHead>
+              </TableRow>
+              <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
+                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
+                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
+                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
+                {dayColumns.map(day => (
+                  <TableHead key={`sub-${day}`} className="bg-[#347deb] w-[150px] sticky top-0 z-50">
+                    <div className="space-y-1 text-xs text-white">
+                      <div>Day Type</div>
+                      <div>Schedule</div>
+                      <div>Slots</div>
+                      <div>Total Hours</div>
+                    </div>
+                  </TableHead>
+                ))}
+                <TableHead className="bg-[#347deb] sticky top-0 z-50"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {rosterDaysLoading ? null : rosterDaysStructure.length === 0 ? (
-                <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={4 + dayColumns.length} className="p-0 align-middle">
-                      <div className="w-full flex justify-center items-center h-16 min-h-16">
-                        <span className="text-gray-400 text-base text-center">No data available.</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
+                <TableRow>
+                  <TableCell colSpan={4 + dayColumns.length} className="p-0 align-middle">
+                    <div className="w-full flex justify-center items-center h-16 min-h-16">
+                      <span className="text-gray-400 text-base text-center">No data available.</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ) : (
-                <TableBody>
-                  {rosterDaysStructure.map((row) => (
-                    <TableRowComponent
-                      key={row.ROSTER_ITEM_ID}
-                      row={row}
-                      onStartEdit={handleStartEdit}
-                    />
-                  ))}
-                </TableBody>
+                rosterDaysStructure.map((row) => (
+                  <TableRowComponent
+                    key={row.ROSTER_ITEM_ID}
+                    row={row}
+                    onStartEdit={handleStartEdit}
+                  />
+                ))
               )}
-            </Table>
-          </div>
+            </TableBody>
+          </Table>
         </div>
 
         <div className="flex justify-end mt-6">
