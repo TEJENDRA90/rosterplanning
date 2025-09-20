@@ -17,20 +17,24 @@ export function RosterDialog({ open, onOpenChange, onSubmit }: RosterDialogProps
   const [formData, setFormData] = useState({
     rosterName: "",
     rosterCode: "",
-    rosteringDays: 7
+    rosteringDays: ""
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.rosterName && formData.rosterCode) {
-      onSubmit(formData);
-      setFormData({ rosterName: "", rosterCode: "", rosteringDays: 7 });
+    if (formData.rosterName && formData.rosterCode && formData.rosteringDays) {
+      const rosterData = {
+        ...formData,
+        rosteringDays: typeof formData.rosteringDays === 'string' ? parseInt(formData.rosteringDays) : formData.rosteringDays
+      };
+      onSubmit(rosterData);
+      setFormData({ rosterName: "", rosterCode: "", rosteringDays: "" });
       onOpenChange(false);
     }
   };
 
   const handleCancel = () => {
-    setFormData({ rosterName: "", rosterCode: "", rosteringDays: 7 });
+    setFormData({ rosterName: "", rosterCode: "", rosteringDays: "" });
     onOpenChange(false);
   };
 
@@ -81,10 +85,22 @@ export function RosterDialog({ open, onOpenChange, onSubmit }: RosterDialogProps
             </Label>
             <Input
               id="rosteringDays"
-              type="number"
-              min="1"
+              type="text"
+              placeholder="Enter number of days"
               value={formData.rosteringDays}
-              onChange={(e) => setFormData({ ...formData, rosteringDays: parseInt(e.target.value) || 1 })}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow empty string or numbers only
+                if (value === '' || /^\d+$/.test(value)) {
+                  setFormData({ ...formData, rosteringDays: value === '' ? '' : parseInt(value) });
+                }
+              }}
+              onBlur={(e) => {
+                // Set to 1 if empty when user leaves the field
+                if (e.target.value === '') {
+                  setFormData({ ...formData, rosteringDays: 1 });
+                }
+              }}
               required
             />
           </div>
