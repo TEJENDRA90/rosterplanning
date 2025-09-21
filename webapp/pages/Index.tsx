@@ -270,7 +270,7 @@ const Index = () => {
           </div>
 
           {/* Table */}
-            <div className="border rounded-lg overflow-auto max-h-[800px]">
+            <div className="border rounded-lg overflow-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
               <div className="sticky top-0 z-50 bg-[#347deb]">
                 <Table className="min-w-[700px]">
                   <TableHeader className="bg-[#347deb]">

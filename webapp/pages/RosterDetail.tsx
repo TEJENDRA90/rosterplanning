@@ -156,6 +156,7 @@ const RosterDetail = () => {
   // Use dynamic width or slider value
   const effectiveDayWidth = rowWidth[0] || dynamicDayWidth;
 
+
   const memoizedPlanning = useMemo(() => Array.isArray(planning) ? planning : [], [planning]);
   const memoizedSchedulingStatus = useMemo(() => Array.isArray(schedulingStatus) ? schedulingStatus : [], [schedulingStatus]);
 
@@ -547,15 +548,53 @@ const RosterDetail = () => {
 
     return (
       <TableRow key={row.ROSTER_ITEM_ID} className="hover:bg-muted/50">
-        <TableCell className="w-12 text-center sticky left-0 bg-white z-[100]">
+        <TableCell 
+          className="w-12 text-center bg-white" 
+          style={{ 
+            position: 'sticky', 
+            left: 0, 
+            zIndex: 100,
+            backgroundColor: 'white'
+          }}
+        >
           <Checkbox
             checked={selectedJobs.includes(row.ROSTER_ITEM_ID.toString())}
             onCheckedChange={() => handleSelectJob(row.ROSTER_ITEM_ID.toString())}
           />
         </TableCell>
-        <TableCell className="w-[120px] text-left sticky left-[48px] bg-white z-[100]">{row.JOB_TITLE}</TableCell>
-        <TableCell className="w-[100px] text-left sticky left-[168px] bg-white z-[100]">{row.JOB_CODE}</TableCell>
-        <TableCell className="w-[140px] text-left sticky left-[268px] bg-white z-[100]">{row.JOB_TITLE_SEQ_NO}</TableCell>
+        <TableCell 
+          className="w-[120px] text-left bg-white" 
+          style={{ 
+            position: 'sticky', 
+            left: '48px', 
+            zIndex: 100,
+            backgroundColor: 'white'
+          }}
+        >
+          {row.JOB_TITLE}
+        </TableCell>
+        <TableCell 
+          className="w-[100px] text-left bg-white" 
+          style={{ 
+            position: 'sticky', 
+            left: '168px', 
+            zIndex: 100,
+            backgroundColor: 'white'
+          }}
+        >
+          {row.JOB_CODE}
+        </TableCell>
+        <TableCell 
+          className="w-[140px] text-left bg-white" 
+          style={{ 
+            position: 'sticky', 
+            left: '268px', 
+            zIndex: 100,
+            backgroundColor: 'white'
+          }}
+        >
+          {row.JOB_TITLE_SEQ_NO}
+        </TableCell>
         {dayColumns.map(day => {
           const editVals = isEditing ? localEdits[day] || {} : (editedRowValues[row.ROSTER_ITEM_ID]?.[day]) || {};
           const currentDayType = isEditing ? editVals.DAY_TYPE ?? row[`DAY_TYPE_${day}`] : row[`DAY_TYPE_${day}`];
@@ -686,73 +725,201 @@ const RosterDetail = () => {
           </div>
         </div>
 
-        <div className="border rounded-lg overflow-auto max-h-[800px]">
-            <Table className="w-full" style={{ tableLayout: 'fixed', minWidth: `${408 + (dayColumns.length * effectiveDayWidth)}px` }}>
+        {/* Single Table with Sticky Header */}
+        <div className="border rounded-lg overflow-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+          <Table className="w-full" style={{ tableLayout: 'fixed', minWidth: `${408 + (dayColumns.length * effectiveDayWidth)}px` }}>
             {/* Sticky Header */}
-            <TableHeader className="sticky top-0 z-50 bg-[#347deb]">
-              <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                <TableHead className="w-12 text-white bg-[#347deb] sticky top-0 left-0 z-[100]">
-                  <Checkbox
-                    checked={selectedJobs.length === rosterDaysStructure.length && rosterDaysStructure.length > 0}
-                    onCheckedChange={handleSelectAll}
-                  />
+            <TableHeader 
+              className="bg-[#347deb] sticky top-0 z-50" 
+              style={{ 
+                position: 'sticky', 
+                top: 0, 
+                zIndex: 50,
+                backgroundColor: '#347deb'
+              }}
+            >
+                <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                <TableHead 
+                  className="w-12 text-white bg-[#347deb] sticky left-0 z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: 0, 
+                    top: 0, 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                >
+                    <Checkbox
+                      checked={selectedJobs.length === rosterDaysStructure.length && rosterDaysStructure.length > 0}
+                      onCheckedChange={handleSelectAll}
+                    />
+                  </TableHead>
+                <TableHead 
+                  className="text-white bg-[#347deb] w-[120px] sticky left-[48px] z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: '48px', 
+                    top: 0, 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                >
+                  Job Title
                 </TableHead>
-                <TableHead className="text-white bg-[#347deb] w-[120px] sticky top-0 left-[48px] z-[100]">Job Title</TableHead>
-                <TableHead className="text-white bg-[#347deb] w-[100px] sticky top-0 left-[168px] z-[100]">Job Code</TableHead>
-                <TableHead className="text-white bg-[#347deb] w-[140px] sticky top-0 left-[268px] z-[100]">Job Seq No</TableHead>
-                {dayColumns.map(day => (
-                    <TableHead key={day} className="text-center text-white bg-[#347deb] sticky top-0 z-50" style={{ width: `${effectiveDayWidth}px`, minWidth: `${effectiveDayWidth}px` }}>
-                    Day {day}
-                  </TableHead>
-                ))}
-                <TableHead className="text-white bg-[#347deb] w-[100px] sticky top-0 z-50">Action</TableHead>
-              </TableRow>
-              <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
-                <TableHead className="bg-[#347deb] w-12 sticky top-0 left-0 z-[100]"></TableHead>
-                <TableHead className="bg-[#347deb] w-[120px] sticky top-0 left-[48px] z-[100]"></TableHead>
-                <TableHead className="bg-[#347deb] w-[100px] sticky top-0 left-[168px] z-[100]"></TableHead>
-                <TableHead className="bg-[#347deb] w-[140px] sticky top-0 left-[268px] z-[100]"></TableHead>
-                {dayColumns.map(day => (
-                    <TableHead key={`sub-${day}`} className="bg-[#347deb] sticky top-0 z-50" style={{ width: `${effectiveDayWidth}px`, minWidth: `${effectiveDayWidth}px` }}>
-                    <div className="space-y-0.5 text-xs text-white p-1">
-                      <div>Day Type</div>
-                      <div>Schedule</div>
-                      <div>Slots</div>
-                      <div>Total Hours</div>
-                    </div>
-                  </TableHead>
-                ))}
-                <TableHead className="bg-[#347deb] w-[100px] sticky top-0 z-50"></TableHead>
-              </TableRow>
-            </TableHeader>
-            
-            {/* Scrollable Body */}
-            <TableBody>
-              {rosterDaysLoading ? null : rosterDaysStructure.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4 + dayColumns.length} className="p-0 align-middle">
-                    <div className="w-full flex justify-center items-center h-16 min-h-16">
-                      <span className="text-gray-400 text-base text-center">No data available.</span>
-                    </div>
-                  </TableCell>
+                <TableHead 
+                  className="text-white bg-[#347deb] w-[100px] sticky left-[168px] z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: '168px', 
+                    top: 0, 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                >
+                  Job Code
+                </TableHead>
+                <TableHead 
+                  className="text-white bg-[#347deb] w-[140px] sticky left-[268px] z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: '268px', 
+                    top: 0, 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                >
+                  Job Seq No
+                </TableHead>
+                  {dayColumns.map(day => (
+                  <TableHead 
+                    key={day} 
+                    className="text-center text-white bg-[#347deb]" 
+                    style={{ 
+                      width: `${effectiveDayWidth}px`, 
+                      minWidth: `${effectiveDayWidth}px`,
+                      position: 'sticky',
+                      top: 0,
+                      zIndex: 50,
+                      backgroundColor: '#347deb'
+                    }}
+                  >
+                      Day {day}
+                    </TableHead>
+                  ))}
+                <TableHead 
+                  className="text-white bg-[#347deb] w-[100px]"
+                  style={{ 
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 50,
+                    backgroundColor: '#347deb'
+                  }}
+                >
+                  Action
+                </TableHead>
                 </TableRow>
+                <TableRow className="bg-[#347deb] hover:bg-[#347deb]">
+                <TableHead 
+                  className="bg-[#347deb] w-12 sticky left-0 z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: 0, 
+                    top: '40px', 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                ></TableHead>
+                <TableHead 
+                  className="bg-[#347deb] w-[120px] sticky left-[48px] z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: '48px', 
+                    top: '40px', 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                ></TableHead>
+                <TableHead 
+                  className="bg-[#347deb] w-[100px] sticky left-[168px] z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: '168px', 
+                    top: '40px', 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                ></TableHead>
+                <TableHead 
+                  className="bg-[#347deb] w-[140px] sticky left-[268px] z-[100]" 
+                  style={{ 
+                    position: 'sticky', 
+                    left: '268px', 
+                    top: '40px', 
+                    zIndex: 100,
+                    backgroundColor: '#347deb'
+                  }}
+                ></TableHead>
+                  {dayColumns.map(day => (
+                  <TableHead 
+                    key={`sub-${day}`} 
+                    className="bg-[#347deb]" 
+                    style={{ 
+                      width: `${effectiveDayWidth}px`, 
+                      minWidth: `${effectiveDayWidth}px`,
+                      position: 'sticky',
+                      top: '40px',
+                      zIndex: 50,
+                      backgroundColor: '#347deb'
+                    }}
+                  >
+                    <div className="space-y-0.5 text-xs text-white p-1">
+                        <div>Day Type</div>
+                        <div>Schedule</div>
+                        <div>Slots</div>
+                        <div>Total Hours</div>
+                      </div>
+                    </TableHead>
+                  ))}
+                <TableHead 
+                  className="bg-[#347deb] w-[100px]"
+                  style={{ 
+                    position: 'sticky',
+                    top: '40px',
+                    zIndex: 50,
+                    backgroundColor: '#347deb'
+                  }}
+                ></TableHead>
+                </TableRow>
+              </TableHeader>
+              
+            {/* Scrollable Body */}
+                <TableBody>
+              {rosterDaysLoading ? null : rosterDaysStructure.length === 0 ? (
+                  <TableRow>
+                  <TableCell colSpan={4 + dayColumns.length} className="p-0 align-middle">
+                      <div className="w-full flex justify-center items-center h-16 min-h-16">
+                      <span className="text-gray-400 text-base text-center">No data available.</span>
+                      </div>
+                    </TableCell>
+                  </TableRow>
               ) : (
                 rosterDaysStructure.map((row) => (
-                  <TableRowComponent
-                    key={row.ROSTER_ITEM_ID}
-                    row={row}
-                    onStartEdit={handleStartEdit}
-                  />
+                    <TableRowComponent
+                      key={row.ROSTER_ITEM_ID}
+                      row={row}
+                      onStartEdit={handleStartEdit}
+                    />
                 ))
               )}
             </TableBody>
-          </Table>
+            </Table>
         </div>
 
-        <div className="flex justify-end mt-6">
+        {/* Fixed Save Button at Bottom Right */}
+        <div className="fixed bottom-4 right-4 z-50">
           <Button 
             size="lg" 
-            className="bg-[#347deb] text-white hover:bg-blue-500"
+            className="bg-[#347deb] text-white hover:bg-blue-500 shadow-lg"
             onClick={async () => {
               try {
                 const response = await post("./../../api/roster/rosterManagement/saveData", rosterDaysStructure);
